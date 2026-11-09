@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1800 800" preserveAspectRatio="xMidYMid slice">
+<defs>
+ <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#a9cfe3"/><stop offset=".58" stop-color="#e6e7d9"/><stop offset="1" stop-color="#f5dfb3"/></linearGradient>
+ <linearGradient id="field" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#8baa43"/><stop offset=".8" stop-color="#376e30"/><stop offset="1" stop-color="#225a34"/></linearGradient>
+ <linearGradient id="paddy" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#a6c45e"/><stop offset="1" stop-color="#356e34"/></linearGradient>
+ <pattern id="rows" width="29" height="29" patternUnits="userSpaceOnUse" patternTransform="skewX(-14)"><path d="M4 0 V29 M18 0 V29" stroke="#d5e993" stroke-opacity=".27" stroke-width="4"/></pattern>
+ <linearGradient id="veil" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#fff" stop-opacity=".34"/><stop offset=".45" stop-color="#fff" stop-opacity=".1"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+</defs>
+<rect width="1800" height="800" fill="url(#sky)"/>
+<circle cx="380" cy="250" r="120" fill="#fff1cc" opacity=".62"/>
+<path d="M0 497 145 472 285 490 402 416 545 477 670 394 765 450 920 358 1040 437 1176 276 1340 411 1460 311 1580 417 1710 361 1800 424V800H0" fill="#91a5a7"/>
+<path d="m830 448 102-87 100 88 146-173 161 132 119-99 141 122 80-73 124 81 96-40v168H830Z" fill="#6c8590"/>
+<path d="m1145 319 31-43 52 43-34-15-20 16ZM1436 329l21-20 30 28-25-11Z M912 382l21-21 22 24-19-10Z" fill="#e9f3e9" opacity=".7"/>
+<path d="M0 503q250-42 470-7 206-41 421-9 217-24 438-4 216-13 471 12V800H0" fill="#b5b981"/>
+<path d="M0 554q263-46 468-2 240-49 483-4 234-41 447-6 198-32 402-10V800H0" fill="url(#field)"/>
+<path d="M0 637q235-73 500-33 280-72 545-30 435-72 755-18V800H0" fill="url(#paddy)"/>
+<path d="M-60 724q330-148 675-115 347 10 539-37 374-39 685 31v230H0" fill="#397c32"/>
+<path d="M-40 751q365-144 766-120m-749 174q438-149 845-121m-790 165q477-140 945-95" fill="none" stroke="#b7ce6e" stroke-width="23" opacity=".43"/>
+<path d="M0 557h1800M0 571h1800" stroke="#d9d5a6" stroke-width="4" opacity=".6"/>
+<g fill="#235137"><path d="M70 540l14 -43 15 43Z" opacity=".7"/><path d="M120 540l14 -38 15 38Z" opacity=".7"/><path d="M420 540l14 -45 15 45Z" opacity=".7"/><path d="M450 540l14 -35 15 35Z" opacity=".7"/><path d="M515 540l14 -42 15 42Z" opacity=".7"/><path d="M830 540l14 -36 15 36Z" opacity=".7"/><path d="M900 540l14 -52 15 52Z" opacity=".7"/><path d="M1340 540l14 -48 15 48Z" opacity=".7"/><path d="M1411 540l14 -39 15 39Z" opacity=".7"/><path d="M1575 540l14 -35 15 35Z" opacity=".7"/><path d="M1680 540l14 -54 15 54Z" opacity=".7"/></g>
+<!-- stylised greenhouse row (part of approved rural scene) -->
+<g opacity=".88"><path d="M1320 526q40-56 77-56h318q43 3 71 56v32h-466Z" fill="#e4efeb" stroke="#b2c7c7" stroke-width="6"/>
+<path d="M1338 526q30-41 57-41m20 41q29-41 56-41m15 41q31-41 58-41m19 41q31-41 58-41m18 41q31-41 58-41" fill="none" stroke="#a7b8be" stroke-width="5"/>
+<path d="M1320 529h466M1336 557v-31m443 31v-31" stroke="#a6bdb9" stroke-width="4"/></g>
+<rect width="1800" height="800" fill="url(#veil)"/>
+</svg>
