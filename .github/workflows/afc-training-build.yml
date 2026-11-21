@@ -1,0 +1,48 @@
+name: AFC Flutter v2 — Windows + Android
+
+on:
+  pull_request:
+    paths:
+      - 'apps/afc-training/**'
+      - '.github/workflows/afc-training-build.yml'
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - run: flutter create --project-name afc_training --platforms=android .
+        working-directory: apps/afc-training
+      - run: flutter pub get
+        working-directory: apps/afc-training
+      - run: flutter test
+        working-directory: apps/afc-training
+      - run: flutter build apk --debug
+        working-directory: apps/afc-training
+      - uses: actions/upload-artifact@v4
+        with:
+          name: AFC-Training-Android-Debug
+          path: apps/afc-training/build/app/outputs/flutter-apk/app-debug.apk
+
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - run: flutter config --enable-windows-desktop
+      - run: flutter create --project-name afc_training --platforms=windows .
+        working-directory: apps/afc-training
+      - run: flutter pub get
+        working-directory: apps/afc-training
+      - run: flutter build windows --release
+        working-directory: apps/afc-training
+      - uses: actions/upload-artifact@v4
+        with:
+          name: AFC-Training-Windows
+          path: apps/afc-training/build/windows/x64/runner/Release/**
