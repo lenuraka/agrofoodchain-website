@@ -9,14 +9,20 @@ import 'course.dart';
 
 class TrainingStore {
   late final Database db;
-  Future<void> init() async {
+  Future<void> init({String? testingDatabasePath}) async {
     if(!kIsWeb && (Platform.isWindows || Platform.isLinux || Platform.isMacOS)) {
       sqfliteFfiInit();
       databaseFactory = databaseFactoryFfi;
     }
-    final dir=await getApplicationDocumentsDirectory();
-    await dir.create(recursive:true);
-    db=await openDatabase(p.join(dir.path,'afc_training_v2.db'),version:1,
+    final String databasePath;
+    if(testingDatabasePath!=null){
+      databasePath=testingDatabasePath;
+    }else{
+      final dir=await getApplicationDocumentsDirectory();
+      await dir.create(recursive:true);
+      databasePath=p.join(dir.path,'afc_training_v2.db');
+    }
+    db=await openDatabase(databasePath,version:1,
       onCreate:(d,v) async {
         await d.execute('CREATE TABLE groups(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL, company TEXT NOT NULL, created_at TEXT NOT NULL, completed_at TEXT, slide_position INTEGER NOT NULL DEFAULT 0)');
         await d.execute('CREATE TABLE students(id INTEGER PRIMARY KEY AUTOINCREMENT, group_id INTEGER NOT NULL, first_name TEXT NOT NULL, last_name TEXT NOT NULL, created_at TEXT NOT NULL, FOREIGN KEY(group_id) REFERENCES groups(id))');
