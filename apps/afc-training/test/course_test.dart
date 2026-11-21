@@ -18,6 +18,22 @@ void main() {
       expect(part.any((x)=>x.slideInSection==6),isFalse);
     }
   });
+  test('all 70 actual source slide texts and speaker notes loaded', () {
+    final text=File('assets/content/original_slides.json').readAsStringSync();
+    final originals=CoursePackage.parseOriginalSlides(text);
+    expect(originals.length,70);
+    for(final slide in course.slides){
+      final original=originals[slide.id];
+      expect(original,isNotNull,reason:slide.id);
+      expect(original!.content.length,greaterThan(100));
+      expect(original.narration.length,greaterThan(40));
+      expect(original.slide,lessThanOrEqualTo(5));
+    }
+    expect(originals.containsKey('10_06'),isFalse);
+    expect(originals['04_01']!.content,contains('Конструкция'));
+    expect(originals['17_05']!.content,contains('РАЗДЕЛ 17'));
+  });
+
   test('300 unique four-choice questions', () {
     final bank=course.bank;
     expect(bank.length,300);
