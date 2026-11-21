@@ -17,7 +17,7 @@
 3. Откройте **Инструменты → Импорт → WordPress**. При необходимости установите официальный WordPress Importer.
 4. Выберите **только** `content/wordpress-import-unctad-2021.xml`, сопоставьте автора и выполните импорт.
 5. Проверьте **Записи**: заголовок «AGRO FOOD CHAIN Expert Contributed to UNCTAD Training on GLOBALG.A.P. and Dried Fruit Quality», статус опубликовано, рубрика International Cooperation.
-6. Проверьте ссылку `/unc​tad-globalgap-dried-fruit-uzbekistan-2021/` (без невидимых пробелов; фактический slug: `unctad-globalgap-dried-fruit-uzbekistan-2021`), страницу /insights/ и блок новостей на главной.
+6. Проверьте ссылку `/unctad-globalgap-dried-fruit-uzbekistan-2021/` (slug: `unctad-globalgap-dried-fruit-uzbekistan-2021`), страницу /insights/ и блок новостей на главной.
 7. Убедитесь, что в настройках Чтение (Reading) страница записей назначена на Insights, постоянные ссылки включены и сайт доступен по HTTPS.
 
 **Важно:** не импортируйте одновременно *и* единичный XML, *и* общий файл `wordpress-import.xml`: это может создать дубликаты.
