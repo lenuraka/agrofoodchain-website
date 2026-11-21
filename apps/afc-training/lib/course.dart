@@ -37,15 +37,44 @@ class AskedQuestion {
   const AskedQuestion(this.source, this.choices, this.correctIndex);
   bool isCorrect(int? chosen) => chosen == correctIndex;
 }
+class OriginalSlide {
+  final String id;
+  final int section, slide;
+  final String title, content, narration, source;
+  const OriginalSlide(this.id,this.section,this.slide,this.title,this.content,this.narration,this.source);
+  factory OriginalSlide.fromJson(Map<String,dynamic> j) => OriginalSlide(
+    j['id'] as String, j['section'] as int, j['slide'] as int,
+    j['title'] as String, j['content'] as String,
+    j['narration'] as String, j['source'] as String,
+  );
+}
+
 class CoursePackage {
   final String name;
   final List<CourseSection> sections;
   final Map<String,String> notes;
-  const CoursePackage(this.name, this.sections, [this.notes=const {}]);
+  final Map<String,OriginalSlide> originalSlides;
+  const CoursePackage(this.name, this.sections,
+    [this.notes=const {},this.originalSlides=const {}]);
   static Future<CoursePackage> load() async {
     final course=CoursePackage.parse(await rootBundle.loadString('assets/content/controls.json'));
     final raw=jsonDecode(await rootBundle.loadString('assets/content/notes.json')) as Map<String,dynamic>;
-    return CoursePackage(course.name,course.sections,raw.map((key,value)=>MapEntry(key,value.toString())));
+    final source=await rootBundle.loadString('assets/content/original_slides.json');
+    return CoursePackage(course.name,course.sections,
+      raw.map((key,value)=>MapEntry(key,value.toString())),
+      parseOriginalSlides(source),
+    );
+  }
+  static Map<String,OriginalSlide> parseOriginalSlides(String source) {
+    final data=jsonDecode(source) as Map<String,dynamic>;
+    final slides=(data['slides'] as List)
+      .map((e)=>OriginalSlide.fromJson(Map<String,dynamic>.from(e as Map))).toList();
+    final byId={for(final s in slides)s.id:s};
+    if(slides.length!=70 || byId.length!=70
+       || slides.any((s)=>s.slide<1||s.slide>5)) {
+      throw const FormatException('Ожидалось ровно 70 исходных слайдов без шестых');
+    }
+    return byId;
   }
   static CoursePackage parse(String data) {
     final j = jsonDecode(data) as Map<String,dynamic>;
