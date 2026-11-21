@@ -1,0 +1,54 @@
+name: AFC Convert Source PPTX into 70 Slide Images
+
+on:
+  push:
+    branches:
+      - feature/afc-training-group-v2
+    paths:
+      - 'apps/afc-training/source_pptx/*.pptx'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  convert:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Install LibreOffice and Python modules
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libreoffice-impress
+          python -m pip install -r apps/afc-training/tools/requirements-import.txt
+      - name: Render five pages of each source PPTX
+        working-directory: apps/afc-training
+        run: |
+          python tools/import_pptx.py source_pptx
+      - name: Verify 70 PNG files
+        working-directory: apps/afc-training
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path("assets/slides")
+          slides=sorted(p.glob("??_??.png"))
+          assert len(slides)==70, f"Expected 70 PNG, found {len(slides)}"
+          assert all(int(x.stem[-2:])<=5 for x in slides)
+          print("Imported 70 slide images, excluding all slide 6 pages")
+          PY
+      - name: Commit actual slide images and narration to feature branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add apps/afc-training/assets/slides/*.png apps/afc-training/assets/content/notes.json
+          if ! git diff --staged --quiet; then
+            git commit -m "Import 70 original PPTX slide images and speakers notes"
+            git push
+          fi
+      - name: Publish slide images as workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: AFC-70-original-slide-images
+          path: apps/afc-training/assets/slides/*.png
