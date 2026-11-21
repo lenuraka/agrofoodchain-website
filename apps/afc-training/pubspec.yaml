@@ -1,0 +1,28 @@
+name: afc_training
+description: Offline AGRO FOOD CHAIN group learning and personal examinations
+publish_to: none
+version: 2.0.0+1
+
+environment:
+  sdk: ">=3.5.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  audioplayers: ^6.4.0
+  sqflite: ^2.4.2
+  sqflite_common_ffi: ^2.3.5
+  path_provider: ^2.1.5
+  path: ^1.9.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/content/controls.json
+    - assets/content/notes.json
+    - assets/slides/
+    - assets/audio/
