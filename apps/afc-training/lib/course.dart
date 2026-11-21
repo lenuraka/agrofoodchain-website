@@ -40,9 +40,13 @@ class AskedQuestion {
 class CoursePackage {
   final String name;
   final List<CourseSection> sections;
-  const CoursePackage(this.name, this.sections);
-  static Future<CoursePackage> load() async =>
-      CoursePackage.parse(await rootBundle.loadString('assets/content/controls.json'));
+  final Map<String,String> notes;
+  const CoursePackage(this.name, this.sections, [this.notes=const {}]);
+  static Future<CoursePackage> load() async {
+    final course=CoursePackage.parse(await rootBundle.loadString('assets/content/controls.json'));
+    final raw=jsonDecode(await rootBundle.loadString('assets/content/notes.json')) as Map<String,dynamic>;
+    return CoursePackage(course.name,course.sections,raw.map((key,value)=>MapEntry(key,value.toString())));
+  }
   static CoursePackage parse(String data) {
     final j = jsonDecode(data) as Map<String,dynamic>;
     final sections = (j['sections'] as List)
