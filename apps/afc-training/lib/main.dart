@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'course.dart';
 import 'store.dart';
+import 'certificate.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -129,10 +130,19 @@ class _TrainingState extends State<TrainingApp> {
     if(confirm!=true)return;
     setState(()=>busy=true);
     try{
-      await widget.store.saveAttempt(groupId:groupId!,studentId:studentId!,
+      final attemptId=await widget.store.saveAttempt(groupId:groupId!,studentId:studentId!,
         startedAt:examStarted,questions:asked,answers:selected);
       final correct=List.generate(20,(i)=>asked[i].isCorrect(selected[i]))
           .where((v)=>v).length;
+      var certificateStatus='';
+      if(correct>=16){
+        try{
+          final nameOfCompany=(await widget.store.group(groupId!))['company'] as String;
+          final pdf=await CertificateService.issue(attemptId:attemptId,
+            fullName:studentName,company:nameOfCompany,correct:correct,examDate:DateTime.now());
+          certificateStatus='PDF сохранён у администратора: '+pdf;
+        }catch(e){certificateStatus='Не удалось создать PDF: '+e.toString();}
+      }
       if(mounted)await showDialog<void>(context:context,builder:(c)=>AlertDialog(
         title:Text(correct>=16?'Экзамен сдан':'Экзамен не сдан'),
         content:Column(mainAxisSize:MainAxisSize.min,children:[
@@ -140,7 +150,8 @@ class _TrainingState extends State<TrainingApp> {
           Text(correct.toString()+' из 20 · '+(correct*5).toString()+'%',
             style:TextStyle(fontSize:28,fontWeight:FontWeight.bold,
               color:correct>=16?Colors.green:Colors.deepOrange)),
-          const Text('Проходной результат: 16 из 20 (80%)')
+          const Text('Проходной результат: 16 из 20 (80%)'),
+          if(certificateStatus.isNotEmpty) SelectableText(certificateStatus)
         ]),
         actions:[FilledButton(onPressed:()=>Navigator.pop(c),child:const Text('Закрыть'))]));
       screen='group';await refresh();
