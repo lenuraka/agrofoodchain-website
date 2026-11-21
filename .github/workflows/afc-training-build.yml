@@ -17,6 +17,8 @@ jobs:
           channel: stable
       - run: flutter create --project-name afc_training --platforms=android .
         working-directory: apps/afc-training
+      - run: python tools/get_font.py
+        working-directory: apps/afc-training
       - run: flutter pub get
         working-directory: apps/afc-training
       - run: flutter test
@@ -37,6 +39,8 @@ jobs:
           channel: stable
       - run: flutter config --enable-windows-desktop
       - run: flutter create --project-name afc_training --platforms=windows .
+        working-directory: apps/afc-training
+      - run: python tools/get_font.py
         working-directory: apps/afc-training
       - run: flutter pub get
         working-directory: apps/afc-training
