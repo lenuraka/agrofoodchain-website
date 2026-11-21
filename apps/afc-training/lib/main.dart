@@ -63,6 +63,7 @@ class _TrainingState extends State<TrainingApp> {
     name.dispose();company.dispose();
   }
   Future<void> addStudent() async {
+    if(group?['completed_at']!=null){notify('После завершения обучения состав группы закрыт. Создайте новую группу.');return;}
     final last=TextEditingController(),first=TextEditingController();
     final ok=await showDialog<bool>(context:context,builder:(c)=>AlertDialog(
       title:const Text('Добавить слушателя'),
@@ -99,6 +100,12 @@ class _TrainingState extends State<TrainingApp> {
     }catch(e){notify('Файл озвучки не найден. После импорта уроков он появится в приложении.');}
   }
   Future<void> completeTraining() async {
+    final confirmed=await showDialog<bool>(context:context,builder:(c)=>AlertDialog(
+      title:const Text('Подтвердите окончание обучения'),
+      content:Text('Подтверждаете, что все '+students.length.toString()+' зарегистрированных участников совместно просмотрели и прослушали курс?'),
+      actions:[TextButton(onPressed:()=>Navigator.pop(c,false),child:const Text('Продолжить просмотр')),
+        FilledButton(onPressed:()=>Navigator.pop(c,true),child:const Text('Подтверждаю'))]));
+    if(confirmed!=true)return;
     await player.stop();
     await widget.store.finishGroup(groupId!);
     screen='group';await refresh();
@@ -218,7 +225,7 @@ class _TrainingState extends State<TrainingApp> {
         Wrap(spacing:8,children:[
           FilledButton.icon(onPressed:openTraining,icon:const Icon(Icons.play_arrow),
             label:Text(finished?'Повторить курс':'Совместный просмотр 70 слайдов')),
-          OutlinedButton.icon(onPressed:addStudent,icon:const Icon(Icons.person_add),
+          OutlinedButton.icon(onPressed:finished?null:addStudent,icon:const Icon(Icons.person_add),
             label:const Text('Добавить участника'))]),
         const SizedBox(height:8),
         Text(finished?'Совместное обучение завершено. По очереди выбирайте участника для экзамена.':
@@ -267,7 +274,13 @@ class _TrainingState extends State<TrainingApp> {
         Card(child:Padding(padding:const EdgeInsets.all(12),child:Column(
           crossAxisAlignment:CrossAxisAlignment.start,children:[
           const Text('Основные тезисы',style:TextStyle(fontWeight:FontWeight.bold)),
-          ...s.bulletPoints.take(3).map((v)=>Text('• '+v))])))
+          ...s.bulletPoints.take(3).map((v)=>Text('• '+v)),
+          if(widget.course.notes[s.id]?.isNotEmpty==true) ...[
+            const SizedBox(height:12),
+            const Text('Пояснение диктора',style:TextStyle(fontWeight:FontWeight.bold)),
+            Text(widget.course.notes[s.id]!)
+          ]
+          ])))
       ]))),
       Row(children:[
         OutlinedButton(onPressed:slide>0?()=>goSlide(slide-1):null,child:const Text('Назад')),
