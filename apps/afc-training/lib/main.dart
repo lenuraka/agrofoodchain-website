@@ -252,8 +252,59 @@ class _TrainingState extends State<TrainingApp> {
           trailing:Text(a['passed']==1?'Сдан':'Не сдан'))).toList())
     ]);
   }
+  Widget _renderSourceSlide(TrainingSlide slideData,OriginalSlide? original){
+    if(original==null){
+      return Card(child:ListView(padding:const EdgeInsets.all(20),children:[
+        const Text('Учебные тезисы',style:TextStyle(fontSize:18,fontWeight:FontWeight.bold)),
+        ...slideData.bulletPoints.map((v)=>Padding(padding:const EdgeInsets.only(top:8),
+          child:Text('• '+v,style:const TextStyle(fontSize:15))))
+      ]));
+    }
+    final chunks=original.content.split(RegExp(r'\n+'))
+      .map((s)=>s.trim())
+      .where((s)=>s.isNotEmpty&&!s.startsWith('AGRO FOOD CHAIN') &&
+        !RegExp(r'^\d{1,2}\.\d+\s*/\s*6$').hasMatch(s) &&
+        !s.startsWith('РАЗДЕЛ '+original.section.toString()+'  ·'))
+      .toList();
+    final isPhoto=slideData.slideInSection==2||
+      slideData.slideInSection==3||slideData.slideInSection==5;
+    return DecoratedBox(
+      decoration:BoxDecoration(
+        gradient:LinearGradient(colors:[
+          Colors.white,const Color(0xFFF1F7F5)
+        ]),
+        borderRadius:BorderRadius.circular(12),
+        border:Border.all(color:const Color(0xFFDBE6E2))),
+      child:Padding(padding:const EdgeInsets.all(18),
+        child:ListView(children:[
+          Text('ISO 22002-2:2025  •  Раздел '+original.section.toString(),
+            style:const TextStyle(fontSize:12,letterSpacing:1,
+              color:Color(0xFF568377),fontWeight:FontWeight.w600)),
+          const Divider(),
+          ...chunks.map((line){
+            final caps=line.toUpperCase()==line && line.length<85;
+            final violation=line.startsWith('✕')||
+              line.contains('НЕПРАВИЛЬНО')||line.contains('НАРУШЕНИЯ');
+            final positive=line.startsWith('✓')||line.contains('ПРАВИЛЬНО');
+            return Padding(padding:const EdgeInsets.only(bottom:8),
+              child:Text(line,style:TextStyle(
+                fontSize:caps?17:14,
+                fontWeight:caps?FontWeight.w700:FontWeight.w400,
+                height:1.34,
+                color:violation?const Color(0xFFB23D38):
+                  positive?const Color(0xFF137952):const Color(0xFF18324A))));
+          }),
+          if(isPhoto) const Padding(padding:EdgeInsets.only(top:12),
+            child:Text('Фотографии из исходного PowerPoint пока не встроены. '
+              'Они появятся после импорта PNG из оригинальных презентаций.',
+              style:TextStyle(fontSize:12,fontStyle:FontStyle.italic,color:Colors.orange))),
+        ]))
+    );
+  }
   Widget lessonPage(){
     final s=widget.course.slides[slide];
+    final original=widget.course.originalSlides[s.id];
+    final notes=original?.narration??widget.course.notes[s.id]??'';
     return Column(children:[
       LinearProgressIndicator(value:(slide+1)/70),
       const SizedBox(height:10),
@@ -261,25 +312,19 @@ class _TrainingState extends State<TrainingApp> {
       Text(s.subtitle,style:const TextStyle(fontSize:17,color:Color(0xFF15966A))),
       const SizedBox(height:12),
       Expanded(child:SingleChildScrollView(child:Column(children:[
-        ConstrainedBox(constraints:const BoxConstraints(maxHeight:390),
-          child:AspectRatio(aspectRatio:16/9,child:Image.asset(s.imageAsset,
-            fit:BoxFit.contain,errorBuilder:(c,e,trace)=>Card(child:Padding(
-              padding:const EdgeInsets.all(16),child:ListView(children:[
-                const Text('Текстовое содержание урока',style:TextStyle(fontSize:19,fontWeight:FontWeight.bold)),
-                const SizedBox(height:10),
-                ...s.bulletPoints.map((v)=>Padding(padding:const EdgeInsets.only(bottom:8),
-                  child:Text('• '+v,style:const TextStyle(fontSize:15))))
-              ])))))),
+        ConstrainedBox(constraints:const BoxConstraints(maxHeight:450),
+          child:AspectRatio(aspectRatio:16/9,
+            child:Image.asset(s.imageAsset,fit:BoxFit.contain,
+              errorBuilder:(context,error,trace)=>_renderSourceSlide(s,original)))),
         const SizedBox(height:8),
         Card(child:Padding(padding:const EdgeInsets.all(12),child:Column(
           crossAxisAlignment:CrossAxisAlignment.start,children:[
-          const Text('Основные тезисы',style:TextStyle(fontWeight:FontWeight.bold)),
-          ...s.bulletPoints.take(3).map((v)=>Text('• '+v)),
-          if(widget.course.notes[s.id]?.isNotEmpty==true) ...[
-            const SizedBox(height:12),
-            const Text('Пояснение диктора',style:TextStyle(fontWeight:FontWeight.bold)),
-            Text(widget.course.notes[s.id]!)
-          ]
+          const Text('Объяснение для слушателей',
+            style:TextStyle(fontWeight:FontWeight.bold,fontSize:16)),
+          if(notes.isNotEmpty)
+            Padding(padding:const EdgeInsets.only(top:8),child:Text(notes))
+          else
+            ...s.bulletPoints.take(3).map((v)=>Text('• '+v)),
           ])))
       ]))),
       Row(children:[
