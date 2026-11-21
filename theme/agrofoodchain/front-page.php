@@ -29,6 +29,16 @@ $asset = get_template_directory_uri() . '/assets';
 ];foreach($services as $s): ?><a class="board-service" href="<?php echo esc_url(home_url($s[3])); ?>"><img src="<?php echo esc_url($asset.'/icons/'.$s[0].'.svg'); ?>" alt="" width="49" height="49" loading="lazy"><h3><?php echo wp_kses_post($s[1]); ?></h3><p><?php echo esc_html($s[2]); ?></p><span class="go-link">Explore service ↗</span></a><?php endforeach; ?>
 </div></div></section>
 <section class="section board-development"><div class="wrap development-layout"><div><div class="kicker">INTERNATIONAL DEVELOPMENT PARTNERS</div><h2>Regional implementation.<br>Global development goals.</h2><p class="lead">AGRO FOOD CHAIN supports technical assistance, supplier assessments, capacity building and standards-based initiatives across Central Asia.</p><a class="btn btn-primary" href="<?php echo esc_url(home_url('/development-projects/')); ?>">Explore partnerships ↗</a></div><div class="development-panel"><span>OUR AREAS OF WORK</span><ul><li>Development programmes &amp; donor-funded projects</li><li>International certification and standards</li><li>Supplier selection and verification</li><li>Social compliance and ESG assessments</li><li>Training, field implementation and follow-up</li></ul></div></div></section>
+<section class="section board-insights"><div class="wrap"><div class="insights-head"><div><div class="kicker">LATEST INSIGHTS &amp; PROJECT ARCHIVE</div><h2>Field experience. <span>Shared expertise.</span></h2><p>Selected publications, technical contributions and archived project highlights.</p></div><a class="btn btn-outline" href="<?php echo esc_url(home_url('/insights/')); ?>">All insights ↗</a></div>
+<div class="insights-cards">
+<?php $afc_recent = get_posts(array('posts_per_page'=>3,'post_status'=>'publish','ignore_sticky_posts'=>true));
+foreach ($afc_recent as $afc_post): ?>
+<article class="insights-card"><p class="insights-meta"><?php echo esc_html(get_the_date('d M Y',$afc_post)); ?> · INTERNATIONAL COOPERATION</p>
+<h3><a href="<?php echo esc_url(get_permalink($afc_post)); ?>"><?php echo esc_html(get_the_title($afc_post)); ?></a></h3>
+<p><?php echo esc_html(wp_trim_words(get_the_excerpt($afc_post),27,'…')); ?></p>
+<a class="go-link" href="<?php echo esc_url(get_permalink($afc_post)); ?>">Read article ↗</a></article>
+<?php endforeach; wp_reset_postdata(); ?>
+</div></div></section>
 <section class="board-coverage"><div class="wrap coverage-inner"><div class="coverage-title"><strong>OUR COVERAGE</strong><span>CENTRAL ASIA</span></div><div class="coverage-list"><span>🇺🇿 Uzbekistan</span><span>🇰🇿 Kazakhstan</span><span>🇰🇬 Kyrgyzstan</span><span>🇹🇯 Tajikistan</span><span>🇹🇲 Turkmenistan</span></div><div class="coverage-tag">REGIONAL EXPERTISE.<br>INTERNATIONAL STANDARDS.<br>LASTING IMPACT.</div></div></section>
 <section class="board-final-cta"><div class="wrap"><div><div class="kicker kicker-light">DISCUSS YOUR PROJECT</div><h2>Building responsible value chains together.</h2><p>Tell us about your organisation, assessment scope and the country where you need support.</p></div><a class="btn btn-primary" href="<?php echo esc_url(home_url('/contact/')); ?>">Request a Proposal ↗</a></div></section>
 </main><?php get_footer(); ?>
