@@ -25,6 +25,7 @@ flutter:
   assets:
     - assets/content/controls.json
     - assets/content/notes.json
+    - assets/content/original_slides.json
     - assets/slides/
     - assets/audio/
     - assets/fonts/
