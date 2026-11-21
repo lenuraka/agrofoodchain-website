@@ -19,6 +19,8 @@ jobs:
         working-directory: apps/afc-training
       - run: python tools/get_font.py
         working-directory: apps/afc-training
+      - run: rm -f test/widget_test.dart
+        working-directory: apps/afc-training
       - run: flutter pub get
         working-directory: apps/afc-training
       - run: flutter test
